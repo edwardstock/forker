@@ -1,6 +1,8 @@
 # PHP Forker
 PHP POSIX process manager and async ProcessPool
 
+[![Build Status](https://travis-ci.org/edwardstock/forker.svg?branch=master)](https://travis-ci.org/edwardstock/forker)
+
 ## Features
 * Easy to create multi-processed daemons
 * POSIX Signals dispatching
