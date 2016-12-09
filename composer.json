@@ -1,0 +1,47 @@
+{
+  "name": "edwardstock/forker",
+  "description": "PHP posix process manager and async job handler",
+  "keywords": [
+    "multi-thread",
+    "multi-threaded",
+    "multi-process",
+    "php-async",
+    "process",
+    "fork",
+    "pcntl",
+    "posix"
+  ],
+  "homepage": "https://github.com/edwardstock/forker",
+  "type": "library",
+  "license": "GNU General Public License v3.0",
+  "support": {
+    "issues": "https://github.com/edwardstock/forker/issues?state=open",
+    "source": "https://github.com/edwardstock/forker"
+  },
+  "minimum-stability": "stable",
+  "repositories": [],
+  "require": {
+    "php": ">=7.0.0",
+    "ext-pcntl": "*",
+    "psr/log": "*",
+    "jeremeamia/superclosure": "^2.2.0",
+    "react/event-loop": "^0.4.2",
+    "monolog/monolog": "^1.22.0",
+    "php-ds/php-ds": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*",
+    "kujira/phpunit-printer": "1.0.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "edwardstock\\forker\\": "src/",
+      "edwardstock\\forker\\tests\\": "tests/"
+    }
+  },
+  "config": {
+    "process-timeout": 1800
+  },
+  "scripts": {
+  }
+}
