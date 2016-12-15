@@ -104,7 +104,7 @@ class CallbackTask extends AsyncTask
         $handler = $this->handler;
 
         if ($this->batch !== null) {
-            return $handler($this->argument[0], $this->argument[1], $this);
+            return $handler($this->argument[0], $this->argument[1], $this, ...$arguments);
         }
 
         return $handler($this, ...$arguments);

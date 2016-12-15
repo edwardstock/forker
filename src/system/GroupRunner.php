@@ -68,6 +68,12 @@ class GroupRunner
      */
     protected $pidManager;
 
+    /**
+     * GroupRunner constructor.
+     *
+     * @param PIDManager    $pidManager
+     * @param PriorityQueue $jobs
+     */
     public function __construct(PIDManager $pidManager, PriorityQueue $jobs)
     {
         if ($jobs->isEmpty()) {
@@ -150,7 +156,7 @@ class GroupRunner
 
                 try {
                     $job->getLogger()->debug("Executing worker");
-                    $result = $job->doInBackground();
+                    $result = $job->doInBackground(...$job->getArguments());
 
                     if (($this->flags & ProcessManager::P_JOIN) === ProcessManager::P_JOIN) {
                         $job->getLogger()->debug("Writing result to shm");

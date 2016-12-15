@@ -18,6 +18,25 @@ class ProcessTest extends TestCase
         parent::setUp();
     }
 
+    public function testJobArguments()
+    {
+        $customArg   = 'test';
+        $expectedArg = null; // $customArg should be after future() function
+
+        $job = CallbackTask::create(function (CallbackTask $task, $arg1) {
+            return $arg1;
+        })
+            ->addArgument($customArg)
+            ->future(function ($result) use (&$expectedArg) {
+                $expectedArg = $result;
+            });
+
+        $pm = new ProcessManager();
+        $pm->add($job)->run(true)->wait();
+
+        $this->assertEquals($expectedArg, $customArg);
+    }
+
     public function testNotJoinedProcess()
     {
         $returnValue   = 100;

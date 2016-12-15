@@ -108,7 +108,7 @@ class BatchGroupRunner extends GroupRunner
 
                 try {
                     $job->getLogger()->debug("Executing worker");
-                    $result = $job->doInBackground();
+                    $result = $job->doInBackground(...$job->getArguments());
 
                     $job->getLogger()->debug("Writing result to shm");
                     $this->shm->write($job->getPid(), $id, $result);

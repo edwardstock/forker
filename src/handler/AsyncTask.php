@@ -30,11 +30,40 @@ abstract class AsyncTask
     private $exitCode = 0;
 
     /**
+     * @var mixed
+     */
+    private $arguments = [];
+
+    /**
      * Main background job
      *
      * @return mixed
      */
     abstract public function doInBackground(...$arguments);
+
+    /**
+     * If you want to use arguments in function instead of closure values
+     *
+     * @param mixed[] $args
+     *
+     * @return $this
+     */
+    public function addArgument(...$args)
+    {
+        foreach ($args AS $arg) {
+            $this->arguments[] = $arg;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getArguments(): array
+    {
+        return $this->arguments;
+    }
 
     /**
      * @return mixed|null
