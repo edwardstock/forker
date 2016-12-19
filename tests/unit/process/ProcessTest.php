@@ -149,4 +149,43 @@ class ProcessTest extends TestCase
     }
 
 
+    public function testPooling()
+    {
+        $totalJobs      = 8;
+        $poolSize       = 2;
+        $totallyHandled = 0;
+        $data           = [];
+        for ($i = 0; $i < $totalJobs; $i++) {
+            $data[$i] = mt_rand(1000, 9999);
+        }
+
+        $pm = new ProcessManager();
+        $pm->pool($poolSize, true);
+
+        $i = 0;
+        while (sizeof($data) > 0) {
+            $response = $this->poolFakeRemoteFetch($data);
+            $job      = CallbackTask::create(function () use ($i, $response) {
+                $handlingData = $response;
+                fwrite(STDOUT, "Handling {$i} job: {$handlingData}\n");
+            }, function () use (&$totallyHandled) {
+                $totallyHandled++;
+            });
+
+            $pm->add($job);
+            $i++;
+        }
+
+        $this->assertEquals($totalJobs, $totallyHandled);
+
+    }
+
+    private function poolFakeRemoteFetch(array &$data)
+    {
+        sleep(2);
+
+        return array_pop($data);
+    }
+
+
 }

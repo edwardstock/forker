@@ -60,6 +60,16 @@ class ProcessManager
     private $logger;
 
     /**
+     * @var int
+     */
+    private $poolSize = -1;
+
+    /**
+     * @var bool
+     */
+    private $forceJoin = false;
+
+    /**
      * Process constructor.
      *
      * @param string|null $pidFile
@@ -101,6 +111,12 @@ class ProcessManager
 
             $runner->wait();
         }
+
+        foreach ($this->runGroups AS $gid => $group) {
+            if ($group->getStatus() != GroupRunner::INIT) {
+                unset($this->runGroups[$gid]);
+            }
+        }
     }
 
 
@@ -112,6 +128,13 @@ class ProcessManager
      */
     public function run(bool $join = false, &$groupId = null): ProcessManager
     {
+        foreach ($this->runGroups AS $gid => $group) {
+            if ($group->getStatus() != GroupRunner::INIT) {
+                unset($this->runGroups[$gid]);
+            }
+        }
+
+
         $this->dispatchSignals();
 
         $gids = [];
@@ -143,6 +166,20 @@ class ProcessManager
         foreach ($this->runGroups AS $group) {
             $group->run();
         }
+
+        return $this;
+    }
+
+    /**
+     * @param int  $size
+     * @param bool $join
+     *
+     * @return $this
+     */
+    public function pool(int $size, bool $join = false)
+    {
+        $this->poolSize  = $size;
+        $this->forceJoin = $join;
 
         return $this;
     }
@@ -181,7 +218,9 @@ class ProcessManager
                 $this->jobs = new PriorityQueue();
             }
 
+            $this->performPool();
             $this->jobs->push($job, $priority);
+            $this->performPool();
         }
 
         return $this;
@@ -209,6 +248,19 @@ class ProcessManager
         }
 
         return $out;
+    }
+
+    private function performPool()
+    {
+        if ($this->poolSize < 1) {
+            return;
+        }
+
+        if ($this->jobs !== null && $this->jobs->count() === $this->poolSize) {
+            $this->run($this->forceJoin)->wait();
+        } else if ($this->batches !== null && $this->batches->count() === $this->poolSize) {
+            $this->run($this->forceJoin)->wait();
+        }
     }
 
 
