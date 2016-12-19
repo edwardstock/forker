@@ -3,6 +3,24 @@ PHP POSIX process manager and async ProcessPool
 
 [![Build Status](https://travis-ci.org/edwardstock/forker.svg?branch=master)](https://travis-ci.org/edwardstock/forker)
 
+# News
+* 1.0.2
+  * process pooling fix and added method to run process with limited count per "now":
+  ```php
+  <?php
+  $pm = new ProcessManager();
+  $pm->pool(2 /*pool size*/, true /*join processes*/);
+    
+  for($i = 0; $i < 10; $i++) {
+    // when 2 jobs will added to pm queue, they will run, and cleaned after complete
+    // calling $pm->run() manually not needed
+    $pm->add($job); 
+  }
+  ```
+  
+* 1.0.1
+  * Added support for custom arguments in background funciton
+
 ## Features
 * Easy to create multi-processed daemons
 * POSIX Signals dispatching
